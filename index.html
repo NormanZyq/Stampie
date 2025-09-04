@@ -14,41 +14,48 @@
     <header class="toolbar">
       <div class="file-inputs">
         <label class="btn">
-          选择 PDF
+          <span data-i18n="choosePdf">选择 PDF</span>
           <input id="pdfFile" type="file" accept="application/pdf" />
         </label>
         <label class="btn">
-          选择印章图片 (PNG/JPG)
+          <span data-i18n="chooseSealImage">选择印章图片 (PNG/JPG)</span>
           <input id="sealFile" type="file" accept="image/png, image/jpeg" />
         </label>
       </div>
       <div class="controls">
-        <button id="prevPage" disabled>上一页</button>
+        <button id="prevPage" disabled><span data-i18n="prevPage">上一页</span></button>
         <span id="pageInfo">— / —</span>
-        <button id="nextPage" disabled>下一页</button>
+        <button id="nextPage" disabled><span data-i18n="nextPage">下一页</span></button>
         <label class="inline">
-          视图缩放
+          <span data-i18n="zoomLabel">视图缩放</span>
           <input id="zoom" type="range" min="50" max="200" value="100" />
         </label>
       </div>
       <div class="actions">
-        <button id="exportBtn" disabled>导出压平副本</button>
+        <button id="exportBtn" disabled><span data-i18n="exportFlattened">导出压平副本</span></button>
+        <label class="inline">
+          <span data-i18n="langLabel">语言</span>
+          <select id="langSwitch">
+            <option value="zh">中文</option>
+            <option value="en">English</option>
+          </select>
+        </label>
       </div>
     </header>
 
     <main class="workspace">
       <aside class="panel">
         <div class="panel-section">
-          <h3>印章设置</h3>
+          <h3><span data-i18n="sealSettings">印章设置</span></h3>
           <div class="seal-preview" id="sealPreviewWrap">
-            <span class="hint">未选择印章</span>
+            <span class="hint" data-i18n="noSealSelected">未选择印章</span>
           </div>
           <label>
-            大小（像素）
+            <span data-i18n="sizePixels">大小（像素）</span>
             <input id="sealSize" type="range" min="32" max="800" value="200" disabled />
           </label>
           <div class="size-presets">
-            <span class="hint">大小预设</span>
+            <span class="hint" data-i18n="sizePresets">大小预设</span>
             <div class="preset-buttons">
               <button id="preset45" disabled>45 mm</button>
               <button id="preset42" disabled>42 mm</button>
@@ -56,21 +63,21 @@
             </div>
           </div>
           <label>
-            不透明度
+            <span data-i18n="opacity">不透明度</span>
             <input id="sealOpacity" type="range" min="10" max="100" value="100" disabled />
           </label>
           <div class="panel-buttons">
-            <button id="placeSeal" disabled>在页面放置</button>
-            <button id="confirmSeal" disabled>确认添加</button>
-            <button id="cancelSeal" disabled>取消</button>
+            <button id="placeSeal" disabled><span data-i18n="placeOnPage">在页面放置</span></button>
+            <button id="confirmSeal" disabled><span data-i18n="confirmAdd">确认添加</span></button>
+            <button id="cancelSeal" disabled><span data-i18n="cancel">取消</span></button>
           </div>
         </div>
         <div class="panel-section">
-          <h3>当前页印章</h3>
-          <div id="stampsList" class="stamps-list empty">暂无</div>
+          <h3><span data-i18n="currentPageStamps">当前页印章</span></h3>
+          <div id="stampsList" class="stamps-list empty" data-i18n-empty="none">暂无</div>
           <div class="panel-buttons">
-            <button id="undoStamp" disabled>撤销本页最后一个</button>
-            <button id="clearPage" disabled>清空本页</button>
+            <button id="undoStamp" disabled><span data-i18n="undoLastOnPage">撤销本页最后一个</span></button>
+            <button id="clearPage" disabled><span data-i18n="clearPage">清空本页</span></button>
           </div>
         </div>
       </aside>
@@ -87,7 +94,7 @@
     </main>
 
     <footer class="footer">
-      <span>提示：使用鼠标拖动印章移动位置，滚轮或滑块调整大小。</span>
+      <span data-i18n="footerHint">提示：使用鼠标拖动印章移动位置，滚轮或滑块调整大小。</span>
     </footer>
 
     <script src="app.js"></script>

@@ -6,6 +6,93 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
   const $ = (sel) => document.querySelector(sel);
   const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
+  // i18n
+  const i18n = {
+    zh: {
+      title: "Stampie - 盖章 PDF 工具",
+      choosePdf: "选择 PDF",
+      chooseSealImage: "选择印章图片 (PNG/JPG)",
+      prevPage: "上一页",
+      nextPage: "下一页",
+      zoomLabel: "视图缩放",
+      exportFlattened: "导出压平副本",
+      sealSettings: "印章设置",
+      noSealSelected: "未选择印章",
+      sizePixels: "大小（像素）",
+      sizePresets: "大小预设",
+      opacity: "不透明度",
+      placeOnPage: "在页面放置",
+      confirmAdd: "确认添加",
+      cancel: "取消",
+      currentPageStamps: "当前页印章",
+      none: "暂无",
+      undoLastOnPage: "撤销本页最后一个",
+      clearPage: "清空本页",
+      footerHint: "提示：使用鼠标拖动印章移动位置，滚轮或滑块调整大小。",
+      loadPdfError: "加载 PDF 失败，请确认文件是否有效。",
+      loadSealError: "加载印章图片失败，请重新选择。",
+      exportError: "导出失败，请重试或更换文件。",
+      langLabel: "🇨🇳",
+    },
+    en: {
+      title: "Stampie - PDF Stamping Tool",
+      choosePdf: "Choose PDF",
+      chooseSealImage: "Choose Seal Image (PNG/JPG)",
+      prevPage: "Prev",
+      nextPage: "Next",
+      zoomLabel: "Zoom",
+      exportFlattened: "Export Flattened Copy",
+      sealSettings: "Seal Settings",
+      noSealSelected: "No seal selected",
+      sizePixels: "Size (pixels)",
+      sizePresets: "Size Presets",
+      opacity: "Opacity",
+      placeOnPage: "Place on Page",
+      confirmAdd: "Confirm",
+      cancel: "Cancel",
+      currentPageStamps: "Stamps on This Page",
+      none: "None",
+      undoLastOnPage: "Undo Last on Page",
+      clearPage: "Clear Page",
+      footerHint: "Tip: Drag to move seal; use wheel or slider to resize.",
+      loadPdfError: "Failed to load PDF. Please check the file.",
+      loadSealError: "Failed to load seal image. Please try again.",
+      exportError: "Export failed. Please retry or use another file.",
+      langLabel: "🇬🇧",
+    },
+  };
+  const storedLang = localStorage.getItem("lang");
+  let currentLang = storedLang ? storedLang : ((navigator.language || "zh").startsWith("zh") ? "zh" : "en");
+  function t(key) {
+    const table = i18n[currentLang] || i18n.zh;
+    return table[key] || key;
+  }
+  function applyTranslations() {
+    // Update all elements with data-i18n
+    $$('[data-i18n]').forEach((el) => {
+      const key = el.getAttribute('data-i18n');
+      if (key) el.textContent = t(key);
+    });
+    // Update stamps list empty placeholder if empty
+    const list = $("#stampsList");
+    if (list && list.classList.contains("empty")) {
+      list.textContent = t("none");
+    }
+    // Update title and html lang
+    document.title = t('title');
+    document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
+    // Sync selector
+    const select = $("#langSwitch");
+    if (select && select.value !== currentLang) select.value = currentLang;
+  }
+  function setLang(lang) {
+    currentLang = lang === 'en' ? 'en' : 'zh';
+    localStorage.setItem('lang', currentLang);
+    applyTranslations();
+    refreshPager();
+    refreshActionButtons();
+  }
+
   // DOM elements
   const pdfInput = $("#pdfFile");
   const sealInput = $("#sealFile");
@@ -14,6 +101,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
   const pageInfo = $("#pageInfo");
   const exportBtn = $("#exportBtn");
   const zoomRange = $("#zoom");
+  const langSwitch = $("#langSwitch");
 
   const pageContainer = $("#pageContainer");
   const canvas = $("#pdfCanvas");
@@ -103,7 +191,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
     stampsList.innerHTML = "";
     if (pageStamps.length === 0) {
       stampsList.classList.add("empty");
-      stampsList.textContent = "暂无";
+      stampsList.textContent = t("none");
     } else {
       stampsList.classList.remove("empty");
       pageStamps.forEach((s, i) => {
@@ -369,7 +457,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
       await loadPdf(file);
     } catch (err) {
       console.error(err);
-      alert("加载 PDF 失败，请确认文件是否有效。");
+      alert(t("loadPdfError"));
     }
     enableSealControls(!!sealImage);
   });
@@ -404,7 +492,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
     };
     img.onerror = () => {
       URL.revokeObjectURL(url);
-      alert("加载印章图片失败，请重新选择。");
+      alert(t("loadSealError"));
     };
     img.src = url;
   });
@@ -513,10 +601,14 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
       await exportFlattened();
     } catch (e) {
       console.error(e);
-      alert("导出失败，请重试或更换文件。");
+      alert(t("exportError"));
     }
   });
 
   // Initialize
+  applyTranslations();
+  if (langSwitch) {
+    langSwitch.addEventListener('change', (e) => setLang(e.target.value));
+  }
   resetUI();
 })();
