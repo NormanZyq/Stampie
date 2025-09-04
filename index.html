@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Stampie - 盖章 PDF 工具</title>
+    <link rel="stylesheet" href="styles.css" />
+    <!-- pdf.js (viewer only) -->
+    <script src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+    <!-- pdf-lib (for writing flattened PDF) -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  </head>
+  <body>
+    <header class="toolbar">
+      <div class="file-inputs">
+        <label class="btn">
+          选择 PDF
+          <input id="pdfFile" type="file" accept="application/pdf" />
+        </label>
+        <label class="btn">
+          选择印章图片 (PNG/JPG)
+          <input id="sealFile" type="file" accept="image/png, image/jpeg" />
+        </label>
+      </div>
+      <div class="controls">
+        <button id="prevPage" disabled>上一页</button>
+        <span id="pageInfo">— / —</span>
+        <button id="nextPage" disabled>下一页</button>
+        <label class="inline">
+          视图缩放
+          <input id="zoom" type="range" min="50" max="200" value="100" />
+        </label>
+      </div>
+      <div class="actions">
+        <button id="exportBtn" disabled>导出压平副本</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="panel">
+        <div class="panel-section">
+          <h3>印章设置</h3>
+          <div class="seal-preview" id="sealPreviewWrap">
+            <span class="hint">未选择印章</span>
+          </div>
+          <label>
+            大小（像素）
+            <input id="sealSize" type="range" min="32" max="800" value="200" disabled />
+          </label>
+          <div class="size-presets">
+            <span class="hint">大小预设</span>
+            <div class="preset-buttons">
+              <button id="preset45" disabled>45 mm</button>
+              <button id="preset42" disabled>42 mm</button>
+              <button id="preset40" disabled>40 mm</button>
+            </div>
+          </div>
+          <label>
+            不透明度
+            <input id="sealOpacity" type="range" min="10" max="100" value="100" disabled />
+          </label>
+          <div class="panel-buttons">
+            <button id="placeSeal" disabled>在页面放置</button>
+            <button id="confirmSeal" disabled>确认添加</button>
+            <button id="cancelSeal" disabled>取消</button>
+          </div>
+        </div>
+        <div class="panel-section">
+          <h3>当前页印章</h3>
+          <div id="stampsList" class="stamps-list empty">暂无</div>
+          <div class="panel-buttons">
+            <button id="undoStamp" disabled>撤销本页最后一个</button>
+            <button id="clearPage" disabled>清空本页</button>
+          </div>
+        </div>
+      </aside>
+
+      <section class="viewer">
+        <div id="pageContainer" class="page-container">
+          <canvas id="pdfCanvas"></canvas>
+          <!-- overlay 用于交互放置与拖动印章 -->
+          <div id="overlay" class="overlay hidden">
+            <img id="overlayImg" alt="seal" />
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>提示：使用鼠标拖动印章移动位置，滚轮或滑块调整大小。</span>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+  </html>
