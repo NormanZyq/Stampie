@@ -1,47 +1,57 @@
-盖章 PDF 工具（网页版）
+# Stampie — PDF Stamping Tool (Web)
 
-功能
-- 选择 PDF 与印章图片（建议 PNG 透明底）
-- 在页面中预览 PDF、放置印章位置
-- 支持拖动移动、滑块或滚轮调整大小、透明度
-- 支持多次在不同页添加多个印章
-- 导出为压平后的 PDF 副本
+[中文说明](README.zh-CN.md)
 
-使用方法
-1. 打开 `web/index.html`（双击或用浏览器打开，建议 Chrome/Edge）
-2. 点击“选择 PDF”加载文档
-3. 点击“选择印章图片”加载印章图
-4. 如需缩放视图，可调节顶部“视图缩放”
-5. 点击左侧“在页面放置”，在画布中：
-   - 单击：将印章中心移动到点击位置
-   - 拖动：按住印章拖动移动
-   - 滚轮或“大小（像素）”：调整大小
-   - “不透明度”：调整透明度
-   - “确认添加”：将当前印章落到当前页（可重复多次）
-6. 若需要撤销或清空当前页印章，可使用“撤销本页最后一个 / 清空本页”
-7. 完成后点击“导出压平副本”
+Overview
+- Lightweight web app for stamping images onto PDFs and exporting a flattened copy.
+- Runs fully in the browser; no server or upload required.
+- Bilingual UI (English/Chinese) with a language switch in the toolbar.
 
-注意事项
-- 本页面使用 CDN 加载 `pdf.js` 与 `pdf-lib`。如需内网/离线使用，请将依赖下载到本地并替换为相对路径。
-- 位置与尺寸以 PDF 内部点（pt）为单位保存，导出时会自动转换坐标系。
-- 透明度由 `pdf-lib` 的 `opacity` 叠加到页面内容，相当于压平效果。
+Features
+- Load a PDF and a seal image (PNG with transparency recommended; JPG supported).
+- Preview pages, place one or more stamps on any page.
+- Drag to move; mouse wheel or size slider to resize; opacity control.
+- Absolute size presets (e.g., 45 mm) mapped to PDF points.
+- Undo last stamp or clear current page.
+- Export a flattened PDF with stamps burned into pages.
 
-离线/内网部署（可选）
-- 将以下文件下载到 `web/vendor/`：
+Quick Start
+1. Open `index.html` in a modern browser (Chrome/Edge recommended).
+2. Click “Choose PDF” to load a document.
+3. Click “Choose Seal Image (PNG/JPG)” to load your stamp.
+4. Optional: adjust “Zoom” for easier viewing.
+5. Click “Place on Page”, then on the canvas:
+   - Click: move the stamp center to the click position
+   - Drag: move the stamp while holding the mouse
+   - Wheel or “Size (pixels)”: resize; or use size presets
+   - “Opacity”: adjust stamp transparency
+   - “Confirm”: add the current stamp to this page (repeat as needed)
+6. Use “Undo Last on Page” or “Clear Page” if needed.
+7. Click “Export Flattened Copy” to download the stamped PDF.
+
+Notes
+- This app loads `pdf.js` and `pdf-lib` from public CDNs by default. For offline/air‑gapped use, self‑host them and switch to relative paths (see below).
+- Position and size are stored in PDF points (pt). Coordinates are converted appropriately on export.
+- The exported result is flattened: stamps are drawn into the page content with opacity applied by `pdf-lib`.
+
+Offline / Air‑gapped Setup (optional)
+- Download the following files into `web/vendor/`:
   - https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js
   - https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js
   - https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js
-- 修改 `index.html`：
+- Update `index.html` to use local files:
   ```html
   <script src="vendor/pdf.min.js"></script>
   <script src="vendor/pdf-lib.min.js"></script>
   ```
-- 修改 `app.js` 顶部：
+- Update `app.js` worker path at the top:
   ```js
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'vendor/pdf.worker.min.js';
   ```
 
-已知限制
-- 当前交互为单一浮动印章的逐次“确认添加”，暂未提供旋转功能（可后续添加）。
-- 页面仅渲染单页预览（可左右翻页）。如需缩略图导航可扩展。
+Browser Support
+- Recent versions of Chrome, Edge, and Firefox are recommended.
 
+Known Limitations
+- Stamps can be placed, moved, resized, and have opacity, but rotation is not implemented yet.
+- Single-page render view with previous/next navigation; thumbnail sidebar is not included.
